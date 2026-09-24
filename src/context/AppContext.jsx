@@ -24,13 +24,14 @@ function slugify(text) {
   return text.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 }
 
-// The very first time a user logs in, their Firestore account has no
-// data yet. This copies our starting mock data into their account so
-// the app isn't empty on first login. It only runs once per account —
-// it checks if trips already exist before writing anything.
+const defaultProfile = {
+  fullName: mockUser.name,
+  phone: mockUser.phone
+}
+
 async function seedUserDataIfNeeded(uid) {
   const tripsSnapshot = await getDocs(collection(db, 'users', uid, 'trips'))
-  if (!tripsSnapshot.empty) return // already seeded — nothing to do
+  if (!tripsSnapshot.empty) return
 
   const writes = []
 
@@ -44,6 +45,7 @@ async function seedUserDataIfNeeded(uid) {
     writes.push(setDoc(doc(db, 'users', uid, 'saved', item.id), item))
   })
   writes.push(setDoc(doc(db, 'users', uid, 'preferences', 'main'), defaultPreferences))
+  writes.push(setDoc(doc(db, 'users', uid, 'profile', 'main'), defaultProfile))
 
   await Promise.all(writes)
 }
@@ -55,20 +57,19 @@ export function AppProvider({ children }) {
   const [itineraries, setItineraries] = useState({})
   const [savedItems, setSavedItems] = useState([])
   const [preferences, setPreferences] = useState(defaultPreferences)
+  const [profile, setProfile] = useState(defaultProfile)
   const [dataLoading, setDataLoading] = useState(true)
   const [pendingDestination, setPendingDestination] = useState(null)
   const [toast, setToast] = useState({ visible: false, message: '', icon: '✓' })
   const toastTimer = useRef(null)
 
-  // Whenever the logged-in user changes (login, logout, or switching
-  // accounts), reconnect to that user's own data in Firestore.
   useEffect(() => {
     if (!currentUser) {
-      // Logged out — clear everything back to empty/defaults.
       setTrips([])
       setItineraries({})
       setSavedItems([])
       setPreferences(defaultPreferences)
+      setProfile(defaultProfile)
       setDataLoading(false)
       return
     }
@@ -79,8 +80,6 @@ export function AppProvider({ children }) {
       .catch((err) => console.error('Error seeding user data:', err))
       .finally(() => setDataLoading(false))
 
-    // onSnapshot keeps these lists updated live — any write (from
-    // generateItinerary, toggleFavorite, etc.) is picked up automatically.
     const unsubTrips = onSnapshot(
       collection(db, 'users', currentUser.uid, 'trips'),
       (snapshot) => setTrips(snapshot.docs.map((d) => d.data()))
@@ -107,12 +106,19 @@ export function AppProvider({ children }) {
       }
     )
 
-    // Cleanup: stop listening when the user changes or logs out.
+    const unsubProfile = onSnapshot(
+      doc(db, 'users', currentUser.uid, 'profile', 'main'),
+      (snapshot) => {
+        if (snapshot.exists()) setProfile(snapshot.data())
+      }
+    )
+
     return () => {
       unsubTrips()
       unsubItineraries()
       unsubSaved()
       unsubPreferences()
+      unsubProfile()
     }
   }, [currentUser])
 
@@ -124,18 +130,14 @@ export function AppProvider({ children }) {
     }, 2200)
   }, [])
 
-  // Creates a new itinerary + matching trip and writes both to Firestore.
-  // Returns the new id right away (not waiting for the write to finish) —
-  // the screen updates automatically once Firestore confirms it via
-  // the onSnapshot listener above.
-    const generateItinerary = useCallback(async ({ destination, days, guests, vacationType }) => {
+  const generateItinerary = useCallback(async ({ destination, days, guests, vacationType }) => {
     if (!currentUser) return null
 
     const id = `${slugify(destination)}-${Date.now()}`
     const numDays = Number(days)
     const numGuests = Number(guests)
 
-        let subtitle, summary, plan
+    let subtitle, summary, plan
 
     try {
       const aiResult = await generateItineraryWithAI(destination, numDays, numGuests, vacationType)
@@ -220,11 +222,20 @@ export function AppProvider({ children }) {
       .catch((err) => console.error('Error saving preferences:', err))
   }, [currentUser])
 
-  // Profile info (name/phone/tier) is still mock for now — Firebase
-  // Auth only actually knows the email. We overlay the real email on
-  // top of the mock profile so Settings shows your real login email.
+  // Saves edited profile fields (Full Name, Phone) to Firestore.
+  const updateProfile = useCallback((updates) => {
+    if (!currentUser) return
+    setDoc(doc(db, 'users', currentUser.uid, 'profile', 'main'), updates, { merge: true })
+      .catch((err) => console.error('Error saving profile:', err))
+  }, [currentUser])
+
+  // The user object shown across the app: editable fields (name, phone)
+  // come from Firestore's profile doc, email comes from the real
+  // Firebase login, and tier is still mock (no loyalty-tier system yet).
   const user = {
-    ...mockUser,
+    name: profile.fullName,
+    phone: profile.phone,
+    tier: mockUser.tier,
     email: currentUser?.email || mockUser.email
   }
 
@@ -242,6 +253,7 @@ export function AppProvider({ children }) {
     toggleSavedTrip,
     toggleFavorite,
     updatePreferences,
+    updateProfile,
     user
   }
 

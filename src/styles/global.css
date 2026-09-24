@@ -38,8 +38,11 @@ body {
 }
 
 .screens-viewport { flex: 1; position: relative; }
-.screen { padding: 12px 0 96px; position: relative; }
-
+.screen {
+  padding: 12px 0 96px;
+  position: relative;
+  z-index: 1;
+}
 /* Top Bar */
 .top-bar { padding: 12px 22px 10px; display: flex; align-items: center; justify-content: space-between; }
 .logo-wrap { text-decoration: none; cursor: pointer; }
@@ -248,7 +251,43 @@ body {
     margin: 0 auto;
     padding: 40px 48px 60px;
   }
+/* Animated background layer (Home, Trips, Explore, Saved) */
+.animated-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+.animated-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--cream);
+  opacity: 0.88;
+}
+.animated-bg img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  filter: blur(3px) saturate(0.9);
+  animation: bgFade 28s infinite;
+}
+.animated-bg img:nth-child(1) { animation-delay: 0s; }
+.animated-bg img:nth-child(2) { animation-delay: 7s; }
+.animated-bg img:nth-child(3) { animation-delay: 14s; }
+.animated-bg img:nth-child(4) { animation-delay: 21s; }
 
+@keyframes bgFade {
+  0%   { opacity: 0;    transform: scale(1.06); }
+  5%   { opacity: 0.32; transform: scale(1.1); }
+  20%  { opacity: 0.32; transform: scale(1.12); }
+  25%  { opacity: 0;    transform: scale(1.14); }
+  100% { opacity: 0;    transform: scale(1.14); }
+}
   .page-title, .page-sub, .card, .search-box, .trip-card, .add-trip-card, .saved-list {
     margin-left: 0;
     margin-right: 0;

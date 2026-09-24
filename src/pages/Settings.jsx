@@ -1,9 +1,11 @@
+import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useApp } from '../context/AppContext.jsx'
 import Chip from '../components/common/Chip.jsx'
 import SegmentedControl from '../components/common/SegmentedControl.jsx'
 import ToggleSwitch from '../components/common/ToggleSwitch.jsx'
 import PrimaryButton from '../components/common/PrimaryButton.jsx'
+import FormField from '../components/common/FormField.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 
 const allTravelStyles = ['Scenic & Nature', 'Cultural Heritage', 'Luxury Wellness', 'Culinary Tours', 'Offbeat Adventure', 'Beaches & Coastal']
@@ -17,9 +19,28 @@ const currencyOptions = [
 
 function Settings() {
   const navigate = useNavigate()
-  const { user, preferences, updatePreferences, showToast } = useApp()
+  const { user, preferences, updatePreferences, updateProfile, showToast } = useApp()
   const { logout } = useAuth()
 
+  const [isEditingProfile, setIsEditingProfile] = useState(false)
+  const [editName, setEditName] = useState(user.name)
+  const [editPhone, setEditPhone] = useState(user.phone)
+
+  function openEditProfile() {
+    setEditName(user.name)
+    setEditPhone(user.phone)
+    setIsEditingProfile(true)
+  }
+
+  function handleSaveProfile() {
+    if (!editName.trim()) {
+      showToast('Please enter your name', '⚠️')
+      return
+    }
+    updateProfile({ fullName: editName.trim(), phone: editPhone.trim() })
+    showToast('Profile updated', '✓')
+    setIsEditingProfile(false)
+  }
 
   function toggleTravelStyle(style) {
     const current = preferences.travelStyles
@@ -58,15 +79,45 @@ function Settings() {
             JG
           </div>
         </div>
-        <h3 className="profile-name">{user.name}</h3>
-        <div className="profile-badge-row">
-          <span>{user.email}</span>
-          <span>•</span>
-          <span className="gold-badge">★ {user.tier}</span>
-        </div>
-        <button className="edit-profile-pill" onClick={() => showToast('Profile editing coming soon', '✏️')}>
-          Edit Profile
-        </button>
+
+        {!isEditingProfile ? (
+          <>
+            <h3 className="profile-name">{user.name}</h3>
+            <div className="profile-badge-row">
+              <span>{user.email}</span>
+              <span>•</span>
+              <span className="gold-badge">★ {user.tier}</span>
+            </div>
+            <button className="edit-profile-pill" onClick={openEditProfile}>
+              Edit Profile
+            </button>
+          </>
+        ) : (
+          <div className="card" style={{ textAlign: 'left', marginTop: '10px' }}>
+            <FormField
+              label="FULL NAME"
+              id="editName"
+              value={editName}
+              onChange={(e) => setEditName(e.target.value)}
+              placeholder="Your name"
+            />
+            <FormField
+              label="PHONE NUMBER"
+              id="editPhone"
+              value={editPhone}
+              onChange={(e) => setEditPhone(e.target.value)}
+              placeholder="+91 ..."
+            />
+            <div style={{ display: 'flex', gap: '10px', marginTop: '4px' }}>
+              <button className="btn-secondary" style={{ flex: 1 }} onClick={() => setIsEditingProfile(false)}>
+                Cancel
+              </button>
+              <button className="btn-primary" style={{ flex: 1, marginTop: 0 }} onClick={handleSaveProfile}>
+                Save
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="card" style={{ marginTop: '4px' }}>
