@@ -196,3 +196,80 @@ body {
 /* Toast */
 .toast-modal { position: fixed; bottom: 94px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #FFFFFF; padding: 12px 22px; border-radius: 16px; font-size: 13px; font-weight: 600; box-shadow: 0 10px 25px rgba(18, 59, 56, 0.35); opacity: 0; pointer-events: none; transition: opacity 0.25s ease, transform 0.25s ease; z-index: 200; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
 .toast-modal.show { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+/* ============================
+   Desktop / Web Layout (>=900px)
+   ============================ */
+
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  background: #E8ECE9;
+}
+
+.sidebar-nav { display: none; }
+
+@media (min-width: 900px) {
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    width: 240px;
+    flex-shrink: 0;
+    background: var(--cream);
+    border-right: 1px solid var(--line);
+    padding: 28px 20px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+  .sidebar-logo { font-family: 'Playfair Display', Georgia, serif; font-size: 24px; font-weight: 800; font-style: italic; letter-spacing: -0.5px; color: var(--ink); }
+  .sidebar-tag { display: block; font-size: 8px; font-weight: 700; letter-spacing: 2.2px; color: var(--muted); margin: 3px 0 32px; }
+  .sidebar-links { display: flex; flex-direction: column; gap: 2px; }
+  .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 12px; color: var(--muted); font-weight: 600; font-size: 14px; text-decoration: none; transition: background 0.2s, color 0.2s; }
+  .sidebar-link svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .sidebar-link:hover { background: #EFF3F1; color: var(--ink); }
+  .sidebar-link.active { background: var(--mint); color: var(--accent); font-weight: 700; }
+  .sidebar-footer { margin-top: auto; display: flex; align-items: center; gap: 10px; padding-top: 18px; border-top: 1px solid var(--line); cursor: pointer; }
+  .sidebar-footer .user-avatar { box-shadow: none; border: none; width: 34px; height: 34px; font-size: 12px; }
+  .sidebar-footer span { font-size: 13px; font-weight: 700; color: var(--ink); }
+
+  .top-bar { display: none; }
+  .bottom-nav { display: none; }
+
+  .device-frame {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    flex: 1;
+    min-height: 100vh;
+  }
+
+  .screen {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 48px 60px;
+  }
+
+  .page-title, .page-sub, .card, .search-box, .trip-card, .add-trip-card, .saved-list {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .section-header, .dest-grid, .category-tabs, .settings-nav-header, .profile-block {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .page-title { font-size: 36px; }
+  .page-sub { font-size: 15px; }
+  .card { padding: 28px; border-radius: 24px; }
+
+  .dest-grid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 18px; }
+
+  .home-layout { display: flex; gap: 40px; align-items: flex-start; }
+  .home-form-col { width: 420px; flex-shrink: 0; position: sticky; top: 40px; }
+  .home-explore-col { flex: 1; min-width: 0; }
+
+  .itinerary-hero-content { max-width: 1200px; margin-left: auto; margin-right: auto; left: 0; right: 0; padding: 0 48px; }
+  .timeline-container { max-width: 1200px; margin: 16px auto 24px; padding-left: 48px; }
+  .itinerary-back-btn { left: 48px; }
+}
