@@ -9,14 +9,31 @@ import { useApp } from '../context/AppContext.jsx'
 
 const vacationTypes = ['Relaxation', 'Adventure', 'Family', 'Culture', 'Honeymoon']
 
+function getStored(key, fallback) {
+  try {
+    const stored = localStorage.getItem(key)
+    return stored !== null ? JSON.parse(stored) : fallback
+  } catch {
+    return fallback
+  }
+}
+
+function setStored(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value))
+  } catch {
+    // localStorage unavailable (private browsing, etc.) — fail silently
+  }
+}
+
 function Home() {
   const navigate = useNavigate()
   const { pendingDestination, setPendingDestination, generateItinerary, showToast } = useApp()
 
-  const [destination, setDestination] = useState(pendingDestination || 'Udaipur')
-  const [days, setDays] = useState(4)
-  const [guests, setGuests] = useState(2)
-  const [vacationType, setVacationType] = useState('Relaxation')
+  const [destination, setDestination] = useState(() => pendingDestination || getStored('lastDestination', 'Udaipur'))
+  const [days, setDays] = useState(() => getStored('lastDays', 4))
+  const [guests, setGuests] = useState(() => getStored('lastGuests', 2))
+  const [vacationType, setVacationType] = useState(() => getStored('lastVacationType', 'Relaxation'))
   const [isGenerating, setIsGenerating] = useState(false)
 
   useEffect(() => {
@@ -24,6 +41,12 @@ function Home() {
       setPendingDestination(null)
     }
   }, [pendingDestination, setPendingDestination])
+
+  // Remember the last values entered, so returning to this page keeps them
+  useEffect(() => { setStored('lastDestination', destination) }, [destination])
+  useEffect(() => { setStored('lastDays', days) }, [days])
+  useEffect(() => { setStored('lastGuests', guests) }, [guests])
+  useEffect(() => { setStored('lastVacationType', vacationType) }, [vacationType])
 
   function handleQuickSelect(dest) {
     setDestination(dest.name)

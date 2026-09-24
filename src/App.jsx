@@ -21,6 +21,12 @@ function App() {
 
   return (
     <div className="app-shell">
+      <div className="bg-blobs" aria-hidden="true">
+        <span className="blob blob-1"></span>
+        <span className="blob blob-2"></span>
+        <span className="blob blob-3"></span>
+      </div>
+
       {showChrome && <Sidebar />}
 
       <div className="device-frame">

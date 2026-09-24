@@ -273,3 +273,70 @@ body {
   .timeline-container { max-width: 1200px; margin: 16px auto 24px; padding-left: 48px; }
   .itinerary-back-btn { left: 48px; }
 }
+/* ============================
+   Ambient background animation
+   ============================ */
+
+.bg-blobs {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  will-change: transform;
+}
+
+.blob-1 {
+  width: 440px;
+  height: 440px;
+  background: var(--mint);
+  opacity: 0.55;
+  top: -140px;
+  left: -120px;
+  animation: floatBlob1 24s ease-in-out infinite;
+}
+
+.blob-2 {
+  width: 380px;
+  height: 380px;
+  background: var(--gold-soft);
+  opacity: 0.6;
+  bottom: -160px;
+  right: -100px;
+  animation: floatBlob2 28s ease-in-out infinite;
+}
+
+.blob-3 {
+  width: 320px;
+  height: 320px;
+  background: var(--accent);
+  opacity: 0.12;
+  top: 45%;
+  left: 55%;
+  animation: floatBlob3 32s ease-in-out infinite;
+}
+
+@keyframes floatBlob1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(70px, 50px) scale(1.15); }
+}
+
+@keyframes floatBlob2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-60px, -40px) scale(1.1); }
+}
+
+@keyframes floatBlob3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-50px, 60px) scale(0.9); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blob { animation: none; }
+}
