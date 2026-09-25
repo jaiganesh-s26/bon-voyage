@@ -14,9 +14,10 @@ import mockTrips from '../data/mockTrips.js'
 import mockSavedItems from '../data/mockSaved.js'
 import mockItineraries from '../data/mockItineraries.js'
 import mockUser, { defaultPreferences } from '../data/mockUser.js'
+import featuredDestinations from '../data/mockDestinations.js'
 import { getHeroImage, getSubtitle, buildGeneratedPlan } from '../utils/itineraryHelpers.js'
 import { generateItineraryWithAI } from '../services/geminiService.js'
-import { fetchDestinationImage } from '../services/pexelsService.js'
+import { fetchDestinationImage, fetchBackgroundImages } from '../services/pexelsService.js'
 
 const AppContext = createContext(null)
 
@@ -62,6 +63,20 @@ export function AppProvider({ children }) {
   const [pendingDestination, setPendingDestination] = useState(null)
   const [toast, setToast] = useState({ visible: false, message: '', icon: '✓' })
   const toastTimer = useRef(null)
+
+  // Rolling background photos — fetched once per app session (not tied
+  // to login state), reused across Home/Trips/Explore/Saved so we don't
+  // re-query Pexels on every navigation.
+  const [backgroundImages, setBackgroundImages] = useState([])
+
+  useEffect(() => {
+    fetchBackgroundImages(6)
+      .then(setBackgroundImages)
+      .catch((err) => {
+        console.error('Failed to fetch background images, using fallback:', err)
+        setBackgroundImages(featuredDestinations.map((d) => d.imageUrl))
+      })
+  }, [])
 
   useEffect(() => {
     if (!currentUser) {
@@ -222,16 +237,12 @@ export function AppProvider({ children }) {
       .catch((err) => console.error('Error saving preferences:', err))
   }, [currentUser])
 
-  // Saves edited profile fields (Full Name, Phone) to Firestore.
   const updateProfile = useCallback((updates) => {
     if (!currentUser) return
     setDoc(doc(db, 'users', currentUser.uid, 'profile', 'main'), updates, { merge: true })
       .catch((err) => console.error('Error saving profile:', err))
   }, [currentUser])
 
-  // The user object shown across the app: editable fields (name, phone)
-  // come from Firestore's profile doc, email comes from the real
-  // Firebase login, and tier is still mock (no loyalty-tier system yet).
   const user = {
     name: profile.fullName,
     phone: profile.phone,
@@ -254,7 +265,8 @@ export function AppProvider({ children }) {
     toggleFavorite,
     updatePreferences,
     updateProfile,
-    user
+    user,
+    backgroundImages
   }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>

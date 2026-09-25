@@ -252,6 +252,7 @@ body {
     padding: 40px 48px 60px;
   }
 /* Animated background layer (Home, Trips, Explore, Saved) */
+/* Animated background layer (Home, Trips, Explore, Saved) */
 .animated-bg {
   position: absolute;
   inset: 0;
@@ -264,7 +265,7 @@ body {
   position: absolute;
   inset: 0;
   background: var(--cream);
-  opacity: 0.88;
+  opacity: 0.45;
 }
 .animated-bg img {
   position: absolute;
@@ -273,20 +274,18 @@ body {
   height: 100%;
   object-fit: cover;
   opacity: 0;
-  filter: blur(3px) saturate(0.9);
-  animation: bgFade 28s infinite;
+  filter: blur(2px) saturate(0.95);
+  animation-name: bgFade;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
 }
-.animated-bg img:nth-child(1) { animation-delay: 0s; }
-.animated-bg img:nth-child(2) { animation-delay: 7s; }
-.animated-bg img:nth-child(3) { animation-delay: 14s; }
-.animated-bg img:nth-child(4) { animation-delay: 21s; }
 
 @keyframes bgFade {
-  0%   { opacity: 0;    transform: scale(1.06); }
-  5%   { opacity: 0.32; transform: scale(1.1); }
-  20%  { opacity: 0.32; transform: scale(1.12); }
-  25%  { opacity: 0;    transform: scale(1.14); }
-  100% { opacity: 0;    transform: scale(1.14); }
+  0%   { opacity: 0;   transform: scale(1.06); }
+  8%   { opacity: 0.5; transform: scale(1.1); }
+  85%  { opacity: 0.5; transform: scale(1.13); }
+  93%  { opacity: 0;   transform: scale(1.14); }
+  100% { opacity: 0;   transform: scale(1.14); }
 }
   .page-title, .page-sub, .card, .search-box, .trip-card, .add-trip-card, .saved-list {
     margin-left: 0;
