@@ -1,6 +1,7 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
 import TopBar from './components/layout/TopBar.jsx'
 import BottomNav from './components/layout/BottomNav.jsx'
+import Sidebar from './components/layout/Sidebar.jsx'
 import Toast from './components/common/Toast.jsx'
 import AnimatedBackground from './components/common/AnimatedBackground.jsx'
 import ProtectedRoute from './components/auth/ProtectedRoute.jsx'
@@ -26,6 +27,7 @@ function App() {
 
   return (
     <div className={frameClassName}>
+      {showChrome && <Sidebar />}
       {showChrome && <TopBar />}
 
       <div className="screens-viewport">

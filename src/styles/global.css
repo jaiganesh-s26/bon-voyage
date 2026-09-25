@@ -468,3 +468,106 @@ body {
 .animated-bg--light img.bg-active {
   opacity: 0.22 !important;
 }
+/* Sidebar is hidden by default (mobile/narrow) — TopBar + BottomNav
+   handle navigation there instead. */
+.sidebar-nav {
+  display: none;
+}
+
+/* At wider (desktop) screens, swap to sidebar navigation: hide
+   TopBar/BottomNav, show a fixed-width sidebar, and let the phone-card
+   mockup stretch into a full-width app layout with a sidebar + content
+   area, similar in spirit to the itinerary page's full-width treatment. */
+@media (min-width: 900px) {
+  .device-frame:not(.device-frame--full) {
+    width: 100%;
+    max-width: 100%;
+    flex-direction: row;
+    align-items: stretch;
+  }
+  .device-frame:not(.device-frame--full) > .top-bar,
+  .device-frame:not(.device-frame--full) > .bottom-nav {
+    display: none;
+  }
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 240px;
+    min-width: 240px;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    background: #FFFFFF;
+    border-right: 1px solid var(--line);
+    padding: 24px 18px;
+    box-sizing: border-box;
+  }
+  .sidebar-logo {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 22px;
+    font-weight: 800;
+    font-style: italic;
+    color: var(--ink);
+  }
+  .sidebar-tag {
+    display: block;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin: 3px 0 28px;
+  }
+  .sidebar-links {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .sidebar-link svg {
+    width: 19px;
+    height: 19px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+  }
+  .sidebar-link:hover {
+    background: #F0F3F1;
+    color: var(--ink);
+  }
+  .sidebar-link.active {
+    background: var(--mint);
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .sidebar-footer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .sidebar-footer:hover {
+    background: #F0F3F1;
+  }
+  .screens-viewport {
+    flex: 1;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+}
