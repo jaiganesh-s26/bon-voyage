@@ -51,19 +51,25 @@ export async function fetchBackgroundImages(count = 6) {
 // page's background — unlike fetchBackgroundImages (generic travel
 // photos), this is targeted to one place.
 export async function fetchDestinationImages(destination, count = 6) {
-  const query = encodeURIComponent(destination + ' travel landmark scenery')
-  const url = `https://api.pexels.com/v1/search?query=${query}&per_page=${count}&orientation=portrait`
-
-  const response = await fetch(url, {
-    headers: { Authorization: API_KEY }
-  })
-
-  if (!response.ok) {
-    throw new Error('Pexels API request failed with status ' + response.status)
+  async function search(query, orientation) {
+    const url = `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=${count}&orientation=${orientation}`
+    const response = await fetch(url, { headers: { Authorization: API_KEY } })
+    if (!response.ok) {
+      throw new Error('Pexels API request failed with status ' + response.status)
+    }
+    const data = await response.json()
+    return data.photos || []
   }
 
-  const data = await response.json()
-  const photos = data.photos || []
+  // Try a specific query first; if it doesn't return much, fall back
+  // to a simpler, broader one — some destinations (modern cities,
+  // smaller towns) don't have many "landmark" tagged photos.
+  let photos = await search(`${destination} cityscape skyline`, 'landscape')
+
+  if (photos.length < 3) {
+    const fallbackPhotos = await search(destination, 'landscape')
+    photos = [...photos, ...fallbackPhotos]
+  }
 
   if (photos.length === 0) {
     throw new Error('No Pexels images found for ' + destination)

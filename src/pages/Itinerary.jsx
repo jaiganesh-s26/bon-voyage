@@ -50,21 +50,21 @@ function Itinerary() {
 
   return (
     <section className="screen" style={{ paddingBottom: '30px' }}>
-      <AnimatedBackground images={bgImages} />
+      <AnimatedBackground images={bgImages} light />
 
       <div className="itinerary-hero-container">
         <button className="itinerary-back-btn" onClick={() => navigate(-1)} title="Back to My Trips">‹</button>
         <img className="itinerary-hero-img" src={heroImageUrl} alt={destination} />
         <div className="itinerary-hero-gradient"></div>
         <div className="itinerary-hero-content">
-          <div className="itinerary-content-wrap">
+          <div className="itinerary-content-wrap itinerary-content-wrap--light">
             <h1 className="itinerary-hero-title">{destination}</h1>
             <p className="itinerary-hero-sub">{subtitle}</p>
           </div>
         </div>
       </div>
 
-      <div className="itinerary-content-wrap">
+      <div className="itinerary-content-wrap itinerary-content-wrap--light">
         <div className="card" style={{ marginTop: '14px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <b style={{ fontSize: '15px', color: 'var(--ink)' }}>

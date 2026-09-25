@@ -449,3 +449,22 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .blob { animation: none; }
 }
+/* Fixes the itinerary page's background painting ABOVE its content
+   instead of behind it, and gives this page a lighter, more readable
+   background treatment than the vivid version on Home/Explore/etc. */
+.itinerary-content-wrap.itinerary-content-wrap--light {
+  position: relative;
+  z-index: 1;
+}
+.itinerary-hero-container {
+  z-index: 1;
+}
+.animated-bg--light::after {
+  opacity: 0.72;
+}
+.animated-bg--light img {
+  opacity: 0 !important;
+}
+.animated-bg--light img.bg-active {
+  opacity: 0.22 !important;
+}
