@@ -1,6 +1,9 @@
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext.jsx'
-import TimelineDay from '../components/Itinerary/TimelineDay.jsx'
+import TimelineDay from '../components/itinerary/TimelineDay.jsx'
+import AnimatedBackground from '../components/common/AnimatedBackground.jsx'
+import { fetchDestinationImages } from '../services/pexelsService.js'
 
 function Itinerary() {
   const { id } = useParams()
@@ -8,6 +11,27 @@ function Itinerary() {
   const { itineraries, toggleSavedTrip, showToast } = useApp()
 
   const itinerary = itineraries[id]
+  const [bgImages, setBgImages] = useState([])
+
+  // Fetch destination-matched background photos whenever we land on a
+  // (different) itinerary. Falls back to reusing the hero image a few
+  // times if Pexels fails, so the background is never left empty.
+  useEffect(() => {
+    if (!itinerary) return
+
+    let cancelled = false
+
+    fetchDestinationImages(itinerary.destination, 6)
+      .then((urls) => {
+        if (!cancelled) setBgImages(urls)
+      })
+      .catch((err) => {
+        console.error('Failed to fetch itinerary background images:', err)
+        if (!cancelled) setBgImages([itinerary.heroImageUrl])
+      })
+
+    return () => { cancelled = true }
+  }, [itinerary])
 
   if (!itinerary) {
     return (
@@ -28,6 +52,8 @@ function Itinerary() {
 
   return (
     <section className="screen" style={{ paddingBottom: '30px' }}>
+      <AnimatedBackground images={bgImages} />
+
       <div className="itinerary-hero-container">
         <button className="itinerary-back-btn" onClick={() => navigate(-1)} title="Back to My Trips">‹</button>
         <img className="itinerary-hero-img" src={heroImageUrl} alt={destination} />

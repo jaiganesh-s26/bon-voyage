@@ -46,3 +46,28 @@ export async function fetchBackgroundImages(count = 6) {
 
   return photos.map((photo) => photo.src.large)
 }
+
+// Fetches photos matching a specific destination, for the Itinerary
+// page's background — unlike fetchBackgroundImages (generic travel
+// photos), this is targeted to one place.
+export async function fetchDestinationImages(destination, count = 6) {
+  const query = encodeURIComponent(destination + ' travel landmark scenery')
+  const url = `https://api.pexels.com/v1/search?query=${query}&per_page=${count}&orientation=portrait`
+
+  const response = await fetch(url, {
+    headers: { Authorization: API_KEY }
+  })
+
+  if (!response.ok) {
+    throw new Error('Pexels API request failed with status ' + response.status)
+  }
+
+  const data = await response.json()
+  const photos = data.photos || []
+
+  if (photos.length === 0) {
+    throw new Error('No Pexels images found for ' + destination)
+  }
+
+  return photos.map((photo) => photo.src.large)
+}

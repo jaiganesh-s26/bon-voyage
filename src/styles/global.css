@@ -281,11 +281,11 @@ body {
 }
 
 @keyframes bgFade {
-  0%   { opacity: 0;   transform: scale(1.06); }
-  8%   { opacity: 0.5; transform: scale(1.1); }
-  85%  { opacity: 0.5; transform: scale(1.13); }
-  93%  { opacity: 0;   transform: scale(1.14); }
-  100% { opacity: 0;   transform: scale(1.14); }
+  0%   { opacity: 0;   transform: scale(1.05); }
+  6%   { opacity: 0.5; transform: scale(1.08); }
+  16%  { opacity: 0.5; transform: scale(1.1); }
+  25%  { opacity: 0;   transform: scale(1.12); }
+  100% { opacity: 0;   transform: scale(1.12); }
 }
   .page-title, .page-sub, .card, .search-box, .trip-card, .add-trip-card, .saved-list {
     margin-left: 0;
