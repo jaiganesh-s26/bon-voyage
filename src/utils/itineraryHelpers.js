@@ -27,6 +27,14 @@ export function getSubtitle(destinationName) {
   return 'Curated Highlights & Scenic Wonders'
 }
 
+export function buildFallbackStays(destinationName) {
+  return [
+    { tier: 'Budget-Friendly', description: `Simple, well-located places to stay near the heart of ${destinationName}.` },
+    { tier: 'Mid-Range Comfort', description: `Comfortable hotels with solid amenities around ${destinationName}.` },
+    { tier: 'Luxury Retreat', description: `High-end resorts and hotels for a premium stay in ${destinationName}.` }
+  ]
+}
+
 // Builds a generic day-by-day plan based on how many days the user
 // entered. This is still mock content (no real AI/backend yet — that's
 // Phase 10) but it now actually reflects the destination and day count.
@@ -39,19 +47,22 @@ export function buildGeneratedPlan(destinationName, days) {
       plan.push({
         day,
         title: 'Arrival & First Impressions',
-        description: `Check in, settle in, and take a relaxed first look around ${destinationName}.`
+        description: `Check in, settle in, and take a relaxed first look around ${destinationName}.`,
+        foodHighlight: `Sample popular local dishes and street food around ${destinationName}.`
       })
     } else if (day === total && total > 1) {
       plan.push({
         day,
         title: 'Last Highlights & Departure',
-        description: `A final morning to soak in ${destinationName} before checkout.`
+        description: `A final morning to soak in ${destinationName} before checkout.`,
+        foodHighlight: `Grab a final local specialty to go before you leave ${destinationName}.`
       })
     } else {
       plan.push({
         day,
         title: `Exploring ${destinationName}`,
-        description: `A curated mix of sightseeing, local culture and downtime around ${destinationName}.`
+        description: `A curated mix of sightseeing, local culture and downtime around ${destinationName}.`,
+        foodHighlight: `Try a well-known regional dish typical of ${destinationName}.`
       })
     }
   }

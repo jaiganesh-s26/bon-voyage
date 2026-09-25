@@ -36,7 +36,78 @@ body {
 @media (max-width: 450px) {
   .device-frame { width: 100%; }
 }
+/* Itinerary page breaks out of the phone-mockup width entirely,
+   so its hero image and background fill the whole browser window. */
+.device-frame.device-frame--full {
+  width: 100%;
+  max-width: 100%;
+}
 
+/* Text/content sections on the itinerary page stay a comfortable
+   reading width and center themselves on wide screens, while the
+   hero image and background behind them go fully edge-to-edge. */
+.itinerary-content-wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Stays section */
+.stays-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding: 4px 20px 0;
+}
+@media (min-width: 640px) {
+  .stays-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+.stay-card {
+  background: #FFFFFF;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.stay-tier {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.stay-description {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+  flex: 1;
+}
+.stay-search-link {
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+  background: var(--mint);
+  color: var(--accent);
+  border: 1px solid #B2D8CE;
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Food highlight line inside each timeline day */
+.timeline-food {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #9A6708;
+  background: var(--gold-soft);
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 10px;
+  font-weight: 600;
+}
 .screens-viewport { flex: 1; position: relative; }
 .screen {
   padding: 12px 0 96px;
